@@ -33,19 +33,6 @@ Steps:
   * Run the Bonsai tool: java -jar target/bonsai-1.0-jar-with-dependencies.jar
   
     Usage: 
-      to pretty-print a json moodel: Bonsai -p modelFile
-      to evaluate a model over a test file: Bonsai -e modelFile dataFile
-      to generate C++ code: Bonsai -c (modelFile)*
+      to evaluate a model over a test file: cat dataFile | java -jar target/bonsai-1.0-jar-with-dependencies.jar
 
-  * To convert the model json file to cpp file:
- 
-    java -jar target/bonsai-1.0-jar-with-dependencies.jar 'model1 json file'  'model2 json file' ...
 
-    
-# Contributors
-* Alex Cozzi
-* Mirek Melichar
-* Amit Jaiswal
-* mijiang
-* Marco Pennacchiotti
- 
