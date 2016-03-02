@@ -22,15 +22,25 @@ import scala.io.Source
  * Main app to manage json encoded decision tree model.
  */
 object Bonsai extends App {
+
+  args.toList match {
+
     // evaluate a model on a test-input file
-    processModel()
+    case modelJsonFilename :: Nil => {
+      processModel(modelJsonFilename)
+    }
+    case _ => {
+      System.err.println("Usage: \n" +
+        " to evaluate a model over a test file: cat input-file | bonsai-streaming model-file > output-file\n")
+    }
+  }
 
   /**
    * All model processing is here. Leave out operations where corresponding input/output parameter is None.
    */
-  def processModel() = {
+  def processModel(modelJsonFilename: String) = {
 
-    val modelJsonFilename = "duvs.new.v1.01.model"
+    // val modelJsonFilename = "duvs.new.v1.01.model"
     println(s"Processing model: ${modelJsonFilename}")
 
     // parse model json file
