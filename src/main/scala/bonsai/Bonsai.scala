@@ -26,8 +26,9 @@ object Bonsai extends App {
   args.toList match {
 
     // evaluate a model on a test-input file
-    case modelJsonFilename :: Nil => {
-      processModel(modelJsonFilename)
+    case modelFile :: Nil => {
+      val m = processModel(modelFile)
+      runPrediction(m)
     }
     case _ => {
       System.err.println("Usage: \n" +
@@ -38,18 +39,19 @@ object Bonsai extends App {
   /**
    * All model processing is here. Leave out operations where corresponding input/output parameter is None.
    */
-  def processModel(modelJsonFilename: String) = {
+  def processModel(modelFile: String) = {
 
-    // val modelJsonFilename = "duvs.new.v1.01.model"
-    System.err.println(s"Processing model: ${modelJsonFilename}")
+    System.err.println(s"Processing model: ${modelFile}")
 
     // parse model json file
-    val json = Json.parse(fixAllScientificNotations(Source.fromFile(modelJsonFilename).mkString))
-    val m = Model.fromJSON(json)
+    val json = Json.parse(fixAllScientificNotations(Source.fromFile(modelFile).mkString))
+    Model.fromJSON(json)
+
+  }
+
+  def runPrediction(m: Model) = {
 
     // evaluate model and validate it against specified output values
-
-
     for (line <- io.Source.stdin.getLines) {
 
         val data = Json.parse(line).as[Seq[JsObject]]
@@ -60,7 +62,7 @@ object Bonsai extends App {
         })
 
     }
- }
+  }
 
   def fixAllScientificNotations(x: String) = x.replaceAll("(\\d+)(e|E)\\+(\\d+)", "$1E$3") // 1e+2 is not accepted by the parser ("+" must be removed)
 
