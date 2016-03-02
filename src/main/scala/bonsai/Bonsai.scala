@@ -39,7 +39,10 @@ object Bonsai extends App {
 
     // evaluate model and validate it against specified output values
 
-        val data = Json.parse(Source.stdin.getLines.mkString).as[Seq[JsObject]]
+
+    for (line <- io.Source.stdin.getLines) {
+
+        val data = Json.parse(line).as[Seq[JsObject]]
         val stat = data.map({ value =>
           val calc = m.eval(value)
           val orig = (value \ "model").as[Double]
@@ -55,7 +58,8 @@ object Bonsai extends App {
         else
           println(f"Validation FAILED with ${100 * stat._1.toDouble / stat._2}%2.2f%% error rate, i.e. ${stat._1} of ${stat._2} test cases failed.")
 
-  }
+    }
+ }
 
   def fixAllScientificNotations(x: String) = x.replaceAll("(\\d+)(e|E)\\+(\\d+)", "$1E$3") // 1e+2 is not accepted by the parser ("+" must be removed)
 
