@@ -41,7 +41,7 @@ object Bonsai extends App {
   def processModel(modelJsonFilename: String) = {
 
     // val modelJsonFilename = "duvs.new.v1.01.model"
-    println(s"Processing model: ${modelJsonFilename}")
+    System.err.println(s"Processing model: ${modelJsonFilename}")
 
     // parse model json file
     val json = Json.parse(fixAllScientificNotations(Source.fromFile(modelJsonFilename).mkString))
@@ -55,18 +55,9 @@ object Bonsai extends App {
         val data = Json.parse(line).as[Seq[JsObject]]
         val stat = data.map({ value =>
           val calc = m.eval(value)
-          val orig = (value \ "model").as[Double]
-          val diff = orig - calc
-          if (Math.abs(diff) > 1e-13) {
-            println("!Large Diff:" + diff, "Eval:" + calc, "Orig:" + orig)
-            1
-          } else
-            0
-        }).toList.map(x => (x, 1)).foldLeft((0, 0))((a, b) => (a._1 + b._1, a._2 + b._2))
-        if (stat._1 == 0)
-          println(s"Validation on ${stat._2} test cases SUCCEEDED with 0 errors.")
-        else
-          println(f"Validation FAILED with ${100 * stat._1.toDouble / stat._2}%2.2f%% error rate, i.e. ${stat._1} of ${stat._2} test cases failed.")
+          val user_id = (value \ "USER_ID").as[Int]
+          println("[{" + "\"USER_ID\":" + user_id + "," + "\"score\":" + calc + "}]")
+        })
 
     }
  }
