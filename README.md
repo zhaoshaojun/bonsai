@@ -9,7 +9,7 @@ This code shows how to implement a web service for GBM (http://cran.r-project.or
 
 # How to run
   * Build: mvn clean package
-  * Run as an application: cat <input-file> | java -jar target/bonsai-streaming-1.0-jar-with-dependencies.jar <model-file> > <output-file>
+  * Run as an application: cat input-file | java -jar target/bonsai-streaming-1.0-jar-with-dependencies.jar model-file > output-file
 
 
 
