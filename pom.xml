@@ -6,8 +6,8 @@
 	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>bonsai</name>
-	<description>Decision tree evaluation</description>
-	<url>https://github.com/eBay/bonsai</url>
+	<description>streaming for Decision tree evaluation</description>
+	<url>https://github.com/zhaoshaojun/bonsai-streaming</url>
 	<inceptionYear>2012</inceptionYear>
 	<licenses>
 		<license>

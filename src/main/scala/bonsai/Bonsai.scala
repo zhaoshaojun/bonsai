@@ -23,12 +23,14 @@ import scala.io.Source
  */
 object Bonsai extends App {
 
+  var m: Model = null
+
   args.toList match {
 
     // evaluate a model on a test-input file
     case modelFile :: Nil => {
-      val m = processModel(modelFile)
-      runPrediction(m)
+      m = processModel(modelFile)
+      runPrediction()
     }
     case _ => {
       System.err.println("Usage: \n" +
@@ -49,7 +51,7 @@ object Bonsai extends App {
 
   }
 
-  def runPrediction(m: Model) = {
+  def runPrediction() = {
 
     // evaluate model and validate it against specified output values
     for (line <- io.Source.stdin.getLines) {
