@@ -23,18 +23,23 @@ import scala.io.Source
  */
 object Bonsai extends App {
 
+  type prediction = Double
   var m: Model = null
 
   args.toList match {
 
     // evaluate a model on a test-input file
-    case modelFile :: Nil => {
+    case "-s" :: modelFile :: Nil => {
       m = processModel(modelFile)
-      runPrediction()
+      runPredictionSeq()
+    }
+    case "-p" :: modelFile :: Nil => {
+      m = processModel(modelFile)
+      runPredictionPar()
     }
     case _ => {
       System.err.println("Usage: \n" +
-        " to evaluate a model over a test file: cat input-file | bonsai-streaming model-file > output-file\n")
+        " to evaluate a model over a test file: cat input-file | bonsai-streaming -[p|s] model-file > output-file\n")
     }
   }
 
@@ -51,19 +56,42 @@ object Bonsai extends App {
 
   }
 
-  def runPrediction() = {
+  def runPredictionSeq() {
+
+    System.err.println(s"Running prediction in 'seq' mode")
 
     // evaluate model and validate it against specified output values
     for (line <- io.Source.stdin.getLines) {
 
         val data = Json.parse(line).as[Seq[JsObject]]
-        val stat = data.map({ value =>
-          val calc = m.eval(value)
-          val user_id = (value \ "USER_ID").as[Int]
-          println("[{" + "\"USER_ID\":" + user_id + "," + "\"score\":" + calc + "}]")
-        })
+
+	for (e <- data) {
+			 val calc = m.eval(e)
+			 // val user_id = (e \ "USER_ID").as[Int]
+			 // println("[{" + "\"USER_ID\":" + user_id + "," + "\"score\":" + calc + "}]")
+	}
 
     }
+    
+  }
+
+  def runPredictionPar() {
+
+    System.err.println(s"Running prediction in 'par' mode")
+
+    // evaluate model and validate it against specified output values
+    for (line <- io.Source.stdin.getLines) {
+
+        val data = Json.parse(line).as[Seq[JsObject]]
+
+	data.par.foreach {
+			 e => val calc = m.eval(e)
+			 // val user_id = (e \ "USER_ID").as[Int]
+			 // println("[{" + "\"USER_ID\":" + user_id + "," + "\"score\":" + calc + "}]")
+	}
+
+    }
+    
   }
 
   def fixAllScientificNotations(x: String) = x.replaceAll("(\\d+)(e|E)\\+(\\d+)", "$1E$3") // 1e+2 is not accepted by the parser ("+" must be removed)

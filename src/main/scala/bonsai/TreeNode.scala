@@ -130,6 +130,7 @@ case class Model(name: String = "", distribution: String = "gaussian", classes: 
    * @return score of the trees on the feature vector.
    */
   def eval(features: JsObject): Double = {
+    // Thread.sleep(100)
     val rawScore = trees.map(_.eval(features)).reduceLeft(_ + _)
     distribution match {
       case "gaussian"  => rawScore
